@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrainGain</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+        body {
+            background-color: #E4E0E1; /* Light background color */
+            color: #493628; /* Dark text color */
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 40px;
+            margin: 0;
+            color: #493628;
+        }
+
+        h2 {
+            color: #493628;
+            font-size: 30px;
+        }
+
+        #loginButton {
+            background-color: #D6C0B3; /* Light tan color */
+            color: #493628;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        #loginButton:hover {
+            background-color: #AB886D; /* Hover effect with a deeper shade */
+            color: white;
+        }
+
+        #profile {
+            display: none;
+            margin-top: 30px;
+        }
+
+        button {
+            background-color: #AB886D;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #493628;
+        }
+
+        #postResponse {
+            margin-top: 20px;
+            color: #493628;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Logo and App Name -->
+    <div class="logo">
+        <img src="qlogo.jpeg" alt="BrainGain Logo" />
+        <h1>BrainGain</h1>
+    </div>
+
+    <!-- MetaMask Login -->
+    <h2>Learn and Earn</h2>
+    <button id="loginButton">Login with MetaMask</button>
+
+    <!-- Login Response -->
+    <div id="loginResponse"></div>
+
+    <!-- Profile Section (hidden initially) -->
+    <div id="profile">
+        <h2>Profile Information</h2>
+        <div id="profileForm">
+            <div>
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div>
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div>
+                <button onclick="processProfileData()">Submit User Profile</button>
+            </div>
+            <div id="postResponse"></div>
+        </div>
+    </div>
+</div>
+<script>
+        let userWalletAddress = null;
+
+        async function loginWithMetaMask() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    userWalletAddress = accounts[0];
+                    document.getElementById('loginResponse').innerHTML = `Logged in with wallet address: ${userWalletAddress}`;
+                    showProfileUI();
+                } catch (error) {
+                    document.getElementById('loginResponse').innerHTML = 'Failed to connect with MetaMask. Please try again.';
+                }
+            } else {
+                document.getElementById('loginResponse').innerHTML = 'MetaMask not detected. Please install MetaMask!';
+            }
+        }
+
+        function showProfileUI() {
+            document.getElementById('profile').style.display = 'block';
+        }
+
+        function hideProfileUI() {
+            document.getElementById('profile').style.display = 'none';
+        }
+
+        async function processProfileData() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+
+            if (!firstName || !lastName || !email || !userWalletAddress) {
+                document.getElementById('postResponse').innerHTML = 'Please fill all fields and login with MetaMask.';
+                return;
+            }
+
+            const userData = {
+                walletAddress: userWalletAddress,
+                firstName: firstName,
+                lastName: lastName,
+                email: email
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/api/profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    window.location.href = 'home.html';
+                } else {
+                    document.getElementById('postResponse').innerHTML = `Error: ${result.message}`;
+                }
+            } catch (error) {
+                document.getElementById('postResponse').innerHTML = 'Error submitting profile. Please try again.';
+            }
+        }
+
+        document.getElementById('loginButton').addEventListener('click', loginWithMetaMask);
+        hideProfileUI();
+    </script>
+</body>
+</html>

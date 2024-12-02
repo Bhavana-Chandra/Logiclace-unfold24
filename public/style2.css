@@ -1,0 +1,152 @@
+/* General Reset */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #E4E0E1;
+    color: #493628;
+    overflow-x: hidden;
+}
+
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #D6C0B3;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+.menu-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 25px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.menu-icon div {
+    height: 4px;
+    width: 100%;
+    background-color: #493628;
+    border-radius: 2px;
+}
+
+/* Navbar Logo Styling */
+.navbar-logo {
+    width: 45px; /* Adjust the logo size */
+    height: auto;
+    cursor: pointer; /* Makes the logo clickable if needed */
+    margin-left: auto; /* Pushes the logo to the far right */
+    margin-right: 8px;
+}
+
+/* Sidebar Menu */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100vh;
+    background-color: #AB886D;
+    padding-top: 60px;
+    transition: all 0.3s ease-in-out;
+    z-index: 99;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin: 20px 0;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+    background-color: #493628;
+    border-radius: 5px;
+}
+
+/* Quiz Styling */
+.quiz-container {
+    margin-top: 80px;
+    padding: 20px;
+    text-align: center;
+}
+
+.score {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.question {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.options {
+    list-style: none;
+    padding: 0;
+}
+
+.option {
+    background-color: #E4E0E1;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.option:hover {
+    background-color: #D6C0B3;
+}
+
+/* Feedback Styling */
+.feedback {
+    margin-top: 10px;
+    font-size: 1.2rem;
+}
+
+.correct {
+    color: green;
+}
+
+.incorrect {
+    color: red;
+}
+
+.mint-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #AB886D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.mint-btn:hover {
+    background-color: #493628;
+}

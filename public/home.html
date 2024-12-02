@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar with Hamburger Icon and Logo -->
+    <div class="navbar">
+        <div class="menu-icon" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <!-- Logo on the right -->
+        <img src="qlogo.jpeg" alt="Logo" class="navbar-logo">
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebarMenu">
+        <ul>
+            <li><a href="profile.html">Edit Profile</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="#" onclick="logout()">Sign Out</a></li>
+        </ul>
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <h1>Welcome to Learn & Earn</h1>
+        <p>Explore content, learn, and grow with us!</p>
+        <a href="question.html" class="explore-btn">Take Quiz</a>
+    </div>
+
+    <script>
+        // Function to toggle the sidebar
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebarMenu');
+            sidebar.classList.toggle('active');
+        }
+
+        // Simulated logout function
+        function logout() {
+            alert('Logged out successfully!');
+            // Redirect to a login page or perform logout logic here
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

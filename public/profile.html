@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="styles1.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            max-width: 400px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Profile Section -->
+    <div class="profile-container">
+        <!-- Profile Image and Username Container -->
+        <div class="profile-card">
+            <!-- Profile Image -->
+            <img src="default-profile.png" alt="Profile Photo" id="profileImage">
+            <button onclick="changeProfilePhoto()">Set Profile Photo</button>
+            <input type="file" id="fileInput" style="display: none;" accept="image/*" onchange="previewImage(event)">
+            
+            <!-- Username Section -->
+            <div class="username-container">
+                <h2 id="usernameDisplay">Username</h2>
+                <button onclick="editUsername()">Edit Username</button>
+                <input type="text" id="usernameInput" style="display: none;" placeholder="Enter username" onchange="saveUsername()">
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <h2 id="pointsEarned">0</h2>
+                <p>Points Earned</p>
+            </div>
+            <div class="stat-card">
+                <h2 id="questionsAttempted">0</h2>
+                <p>Questions Attempted</p>
+            </div>
+            <div class="stat-card">
+                <h2 id="correctAnswers">0</h2>
+                <p>Correct Answers</p>
+            </div>
+        </div>
+
+        <!-- Quiz Performance Chart -->
+        <div class="chart-container">
+            <canvas id="quizPerformanceChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Existing profile photo and username functions remain the same
+        function changeProfilePhoto() {
+            document.getElementById("fileInput").click();
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    const profileImage = document.getElementById("profileImage");
+                    profileImage.src = reader.result;
+                    localStorage.setItem("profilePhoto", reader.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function editUsername() {
+            const usernameDisplay = document.getElementById("usernameDisplay");
+            const usernameInput = document.getElementById("usernameInput");
+
+            usernameDisplay.style.display = "none";
+            usernameInput.style.display = "block";
+            usernameInput.value = usernameDisplay.textContent;
+            usernameInput.focus();
+        }
+
+        function saveUsername() {
+            const usernameInput = document.getElementById("usernameInput");
+            const usernameDisplay = document.getElementById("usernameDisplay");
+
+            const newUsername = usernameInput.value.trim();
+            if (newUsername) {
+                localStorage.setItem("username", newUsername);
+                usernameDisplay.textContent = newUsername;
+            }
+
+            usernameInput.style.display = "none";
+            usernameDisplay.style.display = "block";
+        }
+
+        // New functions for quiz statistics
+        function updateQuizStats() {
+            // Retrieve quiz statistics from localStorage
+            const totalQuestions = localStorage.getItem('totalQuestions') || 0;
+            const correctAnswers = localStorage.getItem('correctAnswers') || 0;
+            const points = localStorage.getItem('points') || 0;
+
+            // Update stats display
+            document.getElementById('questionsAttempted').textContent = totalQuestions;
+            document.getElementById('correctAnswers').textContent = correctAnswers;
+            document.getElementById('pointsEarned').textContent = points;
+
+            // Create pie chart
+            createQuizPerformanceChart(correctAnswers, totalQuestions - correctAnswers);
+        }
+
+        function createQuizPerformanceChart(correctAnswers, incorrectAnswers) {
+            const ctx = document.getElementById('quizPerformanceChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Correct Answers', 'Incorrect Answers'],
+                    datasets: [{
+                        data: [correctAnswers, incorrectAnswers],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.6)',  // Green for correct
+                            'rgba(255, 99, 132, 0.6)'   // Red for incorrect
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Quiz Performance'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load saved data on page load
+        window.onload = function () {
+            const savedPhoto = localStorage.getItem("profilePhoto");
+            const savedUsername = localStorage.getItem("username");
+            
+            if (savedPhoto) {
+                document.getElementById("profileImage").src = savedPhoto;
+            }
+            if (savedUsername) {
+                document.getElementById("usernameDisplay").textContent = savedUsername;
+            }
+
+            // Update quiz statistics
+            updateQuizStats();
+        };
+    </script>
+</body>
+</html>

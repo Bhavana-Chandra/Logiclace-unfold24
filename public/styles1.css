@@ -1,0 +1,104 @@
+/* General Styling */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #E4E0E1, #D6C0B3);
+    color: #493628;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Profile Container */
+.profile-container {
+    text-align: center;
+    width: 80%;
+    max-width: 800px;
+    margin: auto;
+}
+
+/* Profile Card */
+.profile-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+    position: relative;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.profile-card img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #AB886D;
+    margin-bottom: 15px;
+}
+
+.profile-card button {
+    background-color: #AB886D;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+.profile-card button:hover {
+    background-color: #493628;
+    transform: scale(1.05);
+}
+
+/* Stats Section */
+.stats-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+}
+
+.stat-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px 30px;
+    width: 45%;
+    transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card h2 {
+    font-size: 2rem;
+    color: #493628;
+    margin-bottom: 10px;
+}
+
+.stat-card p {
+    font-size: 1rem;
+    color: #AB886D;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
