@@ -97,112 +97,111 @@
 </head>
 <body>
 
-<div class="container">
-    <!-- Logo and App Name -->
-    <div class="logo">
-        <img src="qlogo.jpeg" alt="BrainGain Logo" />
-        <h1>BrainGain</h1>
-    </div>
-
-    <!-- MetaMask Login -->
-    <h2>Learn and Earn</h2>
-    <button id="loginButton">Login with MetaMask</button>
-
-    <!-- Login Response -->
-    <div id="loginResponse"></div>
-
-    <!-- Profile Section (hidden initially) -->
-    <div id="profile">
-        <h2>Profile Information</h2>
-        <div id="profileForm">
-            <div>
-                <label for="firstName">First Name:</label>
-                <input type="text" id="firstName" name="firstName" required>
+    <div class="container">
+        <!-- Logo and App Name -->
+        <div class="logo">
+            <img src="qlogo.jpeg" alt="BrainGain Logo" />
+            <h1>BrainGain</h1>
+        </div>
+    
+        <!-- MetaMask Login -->
+        <h2>Learn and Earn</h2>
+        <button id="loginButton">Login with MetaMask</button>
+    
+        <!-- Login Response -->
+        <div id="loginResponse"></div>
+    
+        <!-- Profile Section (hidden initially) -->
+        <div id="profile">
+            <h2>Profile Information</h2>
+            <div id="profileForm">
+                <div>
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div>
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div>
+                    <button onclick="processProfileData()">Submit User Profile</button>
+                </div>
+                <div id="postResponse"></div>
             </div>
-            <div>
-                <label for="lastName">Last Name:</label>
-                <input type="text" id="lastName" name="lastName" required>
-            </div>
-            <div>
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div>
-                <button onclick="processProfileData()">Submit User Profile</button>
-            </div>
-            <div id="postResponse"></div>
         </div>
     </div>
-</div>
-<script>
-    let userWalletAddress = null;
-
-    async function loginWithMetaMask() {
-        if (typeof window.ethereum !== 'undefined') {
-            try {
-                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                userWalletAddress = accounts[0];
-                document.getElementById('loginResponse').innerHTML = `Logged in with wallet address: ${userWalletAddress}`;
-                showProfileUI();
-            } catch (error) {
-                document.getElementById('loginResponse').innerHTML = 'Failed to connect with MetaMask. Please try again.';
-            }
-        } else {
-            document.getElementById('loginResponse').innerHTML = 'MetaMask not detected. Please install MetaMask!';
-        }
-    }
-
-    function showProfileUI() {
-        document.getElementById('profile').style.display = 'block';
-    }
-
-    function hideProfileUI() {
-        document.getElementById('profile').style.display = 'none';
-    }
-
-    async function processProfileData() {
-        const firstName = document.getElementById('firstName').value;
-        const lastName = document.getElementById('lastName').value;
-        const email = document.getElementById('email').value;
-
-        if (!firstName || !lastName || !email || !userWalletAddress) {
-            document.getElementById('postResponse').innerHTML = 'Please fill all fields and login with MetaMask.';
-            return;
-        }
-
-        const userData = {
-            walletAddress: userWalletAddress,
-            firstName: firstName,
-            lastName: lastName,
-            email: email
-        };
-
-        try {
-            const response = await fetch('http://localhost:5000/api/profile', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userData)
-            });
-
-            const result = await response.json();
-            if (response.ok) {
-                // Redirect to home.html after success or failure
-                window.location.href = 'home.html';
+    
+    <script>
+        let userWalletAddress = null;
+    
+        async function loginWithMetaMask() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    userWalletAddress = accounts[0];
+                    document.getElementById('loginResponse').innerHTML = `Logged in with wallet address: ${userWalletAddress}`;
+                    showProfileUI();
+                } catch (error) {
+                    document.getElementById('loginResponse').innerHTML = 'Failed to connect with MetaMask. Please try again.';
+                }
             } else {
-                document.getElementById('postResponse').innerHTML = `Error: ${result.message}`;
+                document.getElementById('loginResponse').innerHTML = 'MetaMask not detected. Please install MetaMask!';
             }
-        } catch (error) {
-            document.getElementById('postResponse').innerHTML = 'Error submitting profile. Please try again.';
         }
-
-        // Force redirect to home.html even if an error occurs
-        window.location.href = 'home.html';
-    }
-
-    document.getElementById('loginButton').addEventListener('click', loginWithMetaMask);
-    hideProfileUI();
-</script>
-</body>
-</html>
+    
+        function showProfileUI() {
+            document.getElementById('profile').style.display = 'block';
+        }
+    
+        async function processProfileData() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+    
+            if (!firstName || !lastName || !email || !userWalletAddress) {
+                document.getElementById('postResponse').innerHTML = 'Please fill all fields and login with MetaMask.';
+                return;
+            }
+    
+            const userData = {
+                walletAddress: userWalletAddress,
+                firstName: firstName,
+                lastName: lastName,
+                email: email
+            };
+    
+            // Save profile data in local storage to persist through redirection
+            localStorage.setItem('userProfile', JSON.stringify(userData));
+    
+            try {
+                const response = await fetch('http://localhost:5000/api/profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+    
+                const result = await response.json();
+                if (response.ok) {
+                    // Force redirect to home.html after success
+                    window.location.href = 'home.html';
+                } else {
+                    document.getElementById('postResponse').innerHTML = `Error: ${result.message}`;
+                }
+            } catch (error) {
+                document.getElementById('postResponse').innerHTML = 'Error submitting profile. Please try again.';
+            }
+    
+            // Force redirect to home.html even if an error occurs
+            window.location.href = 'home.html';
+        }
+    
+        document.getElementById('loginButton').addEventListener('click', loginWithMetaMask);
+    </script>
+    </body>
+    </html>
