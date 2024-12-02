@@ -88,11 +88,6 @@
         button:hover {
             background-color: #493628;
         }
-
-        #postResponse {
-            margin-top: 20px;
-            color: #493628;
-        }
     </style>
 </head>
 <body>
@@ -130,7 +125,6 @@
                 <div>
                     <button onclick="processProfileData()">Submit User Profile</button>
                 </div>
-                <div id="postResponse"></div>
             </div>
         </div>
     </div>
@@ -163,8 +157,7 @@
             const email = document.getElementById('email').value;
     
             if (!firstName || !lastName || !email || !userWalletAddress) {
-                document.getElementById('postResponse').innerHTML = 'Please fill all fields and login with MetaMask.';
-                return;
+                return;  // Do not display any error message and simply return if fields are empty
             }
     
             const userData = {
@@ -186,15 +179,11 @@
                     body: JSON.stringify(userData)
                 });
     
-                const result = await response.json();
-                if (response.ok) {
-                    // Force redirect to home.html after success
-                    window.location.href = 'home.html';
-                } else {
-                    document.getElementById('postResponse').innerHTML = `Error: ${result.message}`;
-                }
+                // Redirect to home.html after profile submission
+                window.location.href = 'home.html';
             } catch (error) {
-                document.getElementById('postResponse').innerHTML = 'Error submitting profile. Please try again.';
+                // If an error occurs, simply redirect to home.html
+                window.location.href = 'home.html';
             }
     
             // Force redirect to home.html even if an error occurs
@@ -203,5 +192,5 @@
     
         document.getElementById('loginButton').addEventListener('click', loginWithMetaMask);
     </script>
-    </body>
-    </html>
+</body>
+</html>
