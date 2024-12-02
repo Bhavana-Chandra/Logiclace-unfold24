@@ -135,70 +135,74 @@
     </div>
 </div>
 <script>
-        let userWalletAddress = null;
+    let userWalletAddress = null;
 
-        async function loginWithMetaMask() {
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    userWalletAddress = accounts[0];
-                    document.getElementById('loginResponse').innerHTML = `Logged in with wallet address: ${userWalletAddress}`;
-                    showProfileUI();
-                } catch (error) {
-                    document.getElementById('loginResponse').innerHTML = 'Failed to connect with MetaMask. Please try again.';
-                }
-            } else {
-                document.getElementById('loginResponse').innerHTML = 'MetaMask not detected. Please install MetaMask!';
-            }
-        }
-
-        function showProfileUI() {
-            document.getElementById('profile').style.display = 'block';
-        }
-
-        function hideProfileUI() {
-            document.getElementById('profile').style.display = 'none';
-        }
-
-        async function processProfileData() {
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
-            const email = document.getElementById('email').value;
-
-            if (!firstName || !lastName || !email || !userWalletAddress) {
-                document.getElementById('postResponse').innerHTML = 'Please fill all fields and login with MetaMask.';
-                return;
-            }
-
-            const userData = {
-                walletAddress: userWalletAddress,
-                firstName: firstName,
-                lastName: lastName,
-                email: email
-            };
-
+    async function loginWithMetaMask() {
+        if (typeof window.ethereum !== 'undefined') {
             try {
-                const response = await fetch('http://localhost:5000/api/profile', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(userData)
-                });
-
-                const result = await response.json();
-                if (response.ok) {
-                    window.location.href = 'home.html';
-                } else {
-                    document.getElementById('postResponse').innerHTML = `Error: ${result.message}`;
-                }
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                userWalletAddress = accounts[0];
+                document.getElementById('loginResponse').innerHTML = `Logged in with wallet address: ${userWalletAddress}`;
+                showProfileUI();
             } catch (error) {
-                document.getElementById('postResponse').innerHTML = 'Error submitting profile. Please try again.';
+                document.getElementById('loginResponse').innerHTML = 'Failed to connect with MetaMask. Please try again.';
             }
+        } else {
+            document.getElementById('loginResponse').innerHTML = 'MetaMask not detected. Please install MetaMask!';
+        }
+    }
+
+    function showProfileUI() {
+        document.getElementById('profile').style.display = 'block';
+    }
+
+    function hideProfileUI() {
+        document.getElementById('profile').style.display = 'none';
+    }
+
+    async function processProfileData() {
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const email = document.getElementById('email').value;
+
+        if (!firstName || !lastName || !email || !userWalletAddress) {
+            document.getElementById('postResponse').innerHTML = 'Please fill all fields and login with MetaMask.';
+            return;
         }
 
-        document.getElementById('loginButton').addEventListener('click', loginWithMetaMask);
-        hideProfileUI();
-    </script>
+        const userData = {
+            walletAddress: userWalletAddress,
+            firstName: firstName,
+            lastName: lastName,
+            email: email
+        };
+
+        try {
+            const response = await fetch('http://localhost:5000/api/profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                // Redirect to home.html after success or failure
+                window.location.href = 'home.html';
+            } else {
+                document.getElementById('postResponse').innerHTML = `Error: ${result.message}`;
+            }
+        } catch (error) {
+            document.getElementById('postResponse').innerHTML = 'Error submitting profile. Please try again.';
+        }
+
+        // Force redirect to home.html even if an error occurs
+        window.location.href = 'home.html';
+    }
+
+    document.getElementById('loginButton').addEventListener('click', loginWithMetaMask);
+    hideProfileUI();
+</script>
 </body>
 </html>
