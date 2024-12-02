@@ -95,35 +95,21 @@
     async function initializeDashboard() {
         if (typeof window.ethereum !== 'undefined') {
             try {
-                // Request wallet connection
-                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                const walletAddress = accounts[0];
-
-                // Fetch profile data
-                const response = await fetch(`http://localhost:5000/api/profile/${walletAddress}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                const data = await response.json();
-
-                // Hide loading spinner
-                document.getElementById('loading').style.display = 'none';
-
-                if (data.message && data.message === 'User not found.') {
-                    console.log('User not found');
-                    alert('User not found');
-                } else {
-                    // Update profile data on the frontend
-                    document.getElementById('firstName').textContent = data.firstName || 'N/A';
-                    document.getElementById('lastName').textContent = data.lastName || 'N/A';
-                    document.getElementById('email').textContent = data.email || 'N/A';
-                    document.getElementById('walletAddress').textContent = data.walletAddress || 'N/A';
-
+                // Load profile data from localStorage
+                const userProfile = JSON.parse(localStorage.getItem('userProfile'));
+                if (userProfile) {
+                    document.getElementById('firstName').textContent = userProfile.firstName || 'N/A';
+                    document.getElementById('lastName').textContent = userProfile.lastName || 'N/A';
+                    document.getElementById('email').textContent = userProfile.email || 'N/A';
+                    document.getElementById('walletAddress').textContent = userProfile.walletAddress || 'N/A';
                     document.getElementById('profile').style.display = 'block';
 
                     // Fetch wallet balance
-                    await fetchWalletBalance(walletAddress);
+                    await fetchWalletBalance(userProfile.walletAddress);
                 }
+
+                // Hide loading spinner
+                document.getElementById('loading').style.display = 'none';
             } catch (error) {
                 console.error("Error initializing dashboard:", error);
                 alert("Error loading profile. Please try again.");
